@@ -1,5 +1,6 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:material_design/material_design.dart';
 
 late List<CameraDescription> _cameras;
 
