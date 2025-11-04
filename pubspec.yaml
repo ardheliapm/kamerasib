@@ -36,6 +36,10 @@ dependencies:
   cupertino_icons: ^1.0.8
   camera: ^0.11.3
   material_design: ^0.28.1
+  camera_web: ^0.3.5
+  
+dependency_overrides:
+  camera_web: ^0.3.2+5
 
 dev_dependencies:
   flutter_test:
