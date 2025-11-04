@@ -11,6 +11,7 @@ Future<void> main() async {
 
 class CameraApp extends StatefulWidget {
   const CameraApp({super.key});
+
   @override
   State<CameraApp> createState() => _CameraAppState();
 }
@@ -19,21 +20,24 @@ class _CameraAppState extends State<CameraApp> {
   CameraController? _controller;
   String? _err;
 
+  
+  final Color _seedColor = Colors.teal;
+
   @override
   void initState() {
     super.initState();
     _init();
   }
 
+  
   Future<void> _init() async {
     try {
       final cam = _cameras.first;
       _controller = CameraController(
         cam,
-        // Mulai dari LOW dulu; kalau sudah jalan baru naikkan.
-        ResolutionPreset.low,
-        enableAudio: false,                    // hindari izin mic
-        imageFormatGroup: ImageFormatGroup.bgra8888, // aman untuk web
+        ResolutionPreset.low, 
+        enableAudio: false, 
+        imageFormatGroup: ImageFormatGroup.bgra8888,
       );
       await _controller!.initialize();
       if (!mounted) return;
@@ -51,23 +55,98 @@ class _CameraAppState extends State<CameraApp> {
     super.dispose();
   }
 
+  
+  ThemeData _buildLightTheme() {
+    final colorScheme = ColorScheme.fromSeed(
+      seedColor: _seedColor,
+      brightness: Brightness.light,
+    );
+    return ThemeData.from(
+      colorScheme: colorScheme,
+      useMaterial3: true,
+    ).copyWith(
+      appBarTheme: AppBarTheme(
+        backgroundColor: colorScheme.surface,
+        foregroundColor: colorScheme.onSurface,
+      ),
+      filledButtonTheme: FilledButtonThemeData(
+        style: FilledButton.styleFrom(
+          shape: const StadiumBorder(),
+        ),
+      ),
+      cardTheme: const CardThemeData(
+        elevation: 2,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(16)),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      title: 'Camera M3 Demo',
+      debugShowCheckedModeBanner: false,
+      theme: _buildLightTheme(),
       home: Scaffold(
-        appBar: AppBar(title: const Text('Camera Web Test')),
+        appBar: AppBar(title: const Text('Material 3 + Camera Demo')),
+        floatingActionButton: FilledButton.icon(
+          icon: const Icon(Icons.camera_alt),
+          label: const Text('Capture'),
+          onPressed: () {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Tombol Capture ditekan')),
+            );
+          },
+        ),
         body: Center(
           child: _err != null
               ? Text(_err!)
               : (_controller == null || !_controller!.value.isInitialized)
                   ? const CircularProgressIndicator()
-                  : SizedBox(                     // beri ukuran eksplisit biar <video> tidak 0x0
-                      width: 640,
-                      height: 480,
-                      child: AspectRatio(
-                        aspectRatio: _controller!.value.aspectRatio,
-                        child: CameraPreview(_controller!),
-                      ),
+                  : Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        
+                        Card(
+                          margin: const EdgeInsets.all(16),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8),
+                            child: SizedBox(
+                              width: 640,
+                              height: 480,
+                              child: AspectRatio(
+                                aspectRatio: _controller!.value.aspectRatio,
+                                child: CameraPreview(_controller!),
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+
+                        
+                        Wrap(
+                          spacing: 12,
+                          runSpacing: 8,
+                          alignment: WrapAlignment.center,
+                          children: [
+                            FilledButton(
+                              onPressed: () {},
+                              child: const Text('Save Photo'),
+                            ),
+                            OutlinedButton(
+                              onPressed: () {},
+                              child: const Text('Gallery'),
+                            ),
+                            ElevatedButton.icon(
+                              onPressed: () {},
+                              icon: const Icon(Icons.settings),
+                              label: const Text('Settings'),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
         ),
       ),
