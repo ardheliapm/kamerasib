@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:path_provider/path_provider.dart';
 import 'dart:typed_data';
+import 'package:geolocator/geolocator.dart';
 
 // NOTE: kita import dart:html hanya untuk WEB (build ke web saja).
 // Abaikan linter ini kalau kamu hanya target web.

@@ -38,6 +38,7 @@ dependencies:
   material_design: ^0.28.1
   camera_web: ^0.3.5
   path_provider: ^2.1.5
+  geolocator: ^14.0.2
   
 
 dependency_overrides:
